@@ -1,5 +1,5 @@
-use std::env;
 use anyhow::Result;
+use std::env;
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -17,10 +17,10 @@ impl Config {
     pub fn from_env() -> Result<Self> {
         // Load .env if available
         dotenvy::dotenv().ok();
-        
+
         let github_token = env::var("GITHUB_TOKEN").ok();
-        let api_url = env::var("GITHUB_API_URL")
-            .unwrap_or_else(|_| "https://api.github.com".to_string());
+        let api_url =
+            env::var("GITHUB_API_URL").unwrap_or_else(|_| "https://api.github.com".to_string());
 
         // Parse comma-separated lists
         let repos = parse_list(env::var("REPOS").unwrap_or_default());
@@ -28,8 +28,7 @@ impl Config {
         let users = parse_list(env::var("USERS").unwrap_or_default());
 
         // Default listen address
-        let listen_addr =
-            env::var("LISTEN_ADDR").unwrap_or_else(|_| "0.0.0.0:9100".to_string());
+        let listen_addr = env::var("LISTEN_ADDR").unwrap_or_else(|_| "0.0.0.0:9100".to_string());
 
         let scrape_interval_seconds = env::var("SCRAPE_INTERVAL_SECONDS")
             .ok()
