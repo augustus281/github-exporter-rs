@@ -1,4 +1,4 @@
-use prometheus::{Encoder, TextEncoder, IntGaugeVec, IntGauge, Registry};
+use prometheus::{Encoder, IntGauge, IntGaugeVec, Registry, TextEncoder};
 
 /// The `Metrics` struct holds all Prometheus metric definitions
 /// and provides helper methods to register and export them.
@@ -49,41 +49,54 @@ impl Metrics {
         let repo_stars = IntGaugeVec::new(
             prometheus::Opts::new("github_repo_stars", "Number of stars for a repo"),
             &["repo"],
-        ).unwrap();
+        )
+        .unwrap();
 
         let repo_forks = IntGaugeVec::new(
             prometheus::Opts::new("github_repo_forks", "Number of forks for a repo"),
             &["repo"],
-        ).unwrap();
+        )
+        .unwrap();
 
         let repo_issues = IntGaugeVec::new(
-            prometheus::Opts::new("github_repo_open_issues", "Number of open issues for a repo"),
+            prometheus::Opts::new(
+                "github_repo_open_issues",
+                "Number of open issues for a repo",
+            ),
             &["repo"],
-        ).unwrap();
+        )
+        .unwrap();
 
         let repo_watchers = IntGaugeVec::new(
             prometheus::Opts::new("github_repo_watchers", "Number of watchers for a repo"),
             &["repo"],
-        ).unwrap();
+        )
+        .unwrap();
 
         // --- Define metrics for rate limits ---
         let rate_limit_remaining = IntGauge::new(
             "github_rate_limit_remaining",
             "Remaining API requests for the current rate limit window",
-        ).unwrap();
+        )
+        .unwrap();
 
         let rate_limit_reset = IntGauge::new(
             "github_rate_limit_reset",
             "Unix timestamp when the GitHub API rate limit resets",
-        ).unwrap();
+        )
+        .unwrap();
 
         // --- Register all metrics in the registry ---
         registry.register(Box::new(repo_stars.clone())).unwrap();
         registry.register(Box::new(repo_forks.clone())).unwrap();
         registry.register(Box::new(repo_issues.clone())).unwrap();
         registry.register(Box::new(repo_watchers.clone())).unwrap();
-        registry.register(Box::new(rate_limit_remaining.clone())).unwrap();
-        registry.register(Box::new(rate_limit_reset.clone())).unwrap();
+        registry
+            .register(Box::new(rate_limit_remaining.clone()))
+            .unwrap();
+        registry
+            .register(Box::new(rate_limit_reset.clone()))
+            .unwrap();
 
         Self {
             registry,
@@ -122,4 +135,3 @@ impl Metrics {
         String::from_utf8(buffer).unwrap()
     }
 }
-
